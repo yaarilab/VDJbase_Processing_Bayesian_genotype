@@ -216,14 +216,15 @@ ch_empty_file_3 = file("$baseDir/.emptyfiles/NO_FILE_3", hidden:true)
 ch_empty_file_4 = file("$baseDir/.emptyfiles/NO_FILE_4", hidden:true)
 
 Channel.fromPath(params.airr_seq, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_1_fastaFile_g0_9;g_1_fastaFile_g0_12;g_1_fastaFile_g11_9;g_1_fastaFile_g11_12;g_1_fastaFile_g21_9;g_1_fastaFile_g21_12}
-Channel.fromPath(params.v_germline_file, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_2_germlineFastaFile_g_8;g_2_germlineFastaFile_g_15}
-Channel.fromPath(params.d_germline, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_3_germlineFastaFile_g_34;g_3_germlineFastaFile_g_30;g_3_germlineFastaFile_g14_0;g_3_germlineFastaFile_g14_1}
-Channel.fromPath(params.j_germline, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_4_germlineFastaFile_g_31;g_4_germlineFastaFile_g14_0;g_4_germlineFastaFile_g14_1}
+Channel.fromPath(params.v_germline_file, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_2_germlineFastaFile_g_8;g_2_germlineFastaFile_g_15;g_2_germlineFastaFile_g11_12;g_2_germlineFastaFile_g11_22}
+Channel.fromPath(params.d_germline, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_3_germlineFastaFile_g_34;g_3_germlineFastaFile_g_30;g_3_germlineFastaFile_g14_0;g_3_germlineFastaFile_g14_1;g_3_germlineFastaFile_g11_12;g_3_germlineFastaFile_g11_16;g_3_germlineFastaFile_g0_12;g_3_germlineFastaFile_g0_16}
+Channel.fromPath(params.j_germline, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_4_germlineFastaFile_g_31;g_4_germlineFastaFile_g14_0;g_4_germlineFastaFile_g14_1;g_4_germlineFastaFile_g11_12;g_4_germlineFastaFile_g11_17;g_4_germlineFastaFile_g0_12;g_4_germlineFastaFile_g0_17}
 
 
 process First_Alignment_D_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_3_germlineFastaFile_g0_16
 
 output:
  file "${db_name}"  into g0_16_germlineDb0_g0_9
@@ -248,6 +249,7 @@ if(germlineFile.getName().endsWith("fasta")){
 process First_Alignment_J_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_4_germlineFastaFile_g0_17
 
 output:
  file "${db_name}"  into g0_17_germlineDb0_g0_9
@@ -343,6 +345,8 @@ process First_Alignment_MakeDb {
 input:
  set val(name),file(fastaFile) from g_1_fastaFile_g0_12
  set val(name_igblast),file(igblastOut) from g0_9_igblastOut0_g0_12
+ set val(name2), file(d_germline_file) from g_3_germlineFastaFile_g0_12
+ set val(name3), file(j_germline_file) from g_4_germlineFastaFile_g0_12
 
 output:
  set val(name_igblast),file("*_db-pass.tsv") optional true  into g0_12_outputFileTSV0_g0_19
@@ -827,6 +831,7 @@ if(!v_germline_file.endsWith("fasta")){
 process Second_Alignment_D_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_3_germlineFastaFile_g11_16
 
 output:
  file "${db_name}"  into g11_16_germlineDb0_g11_9
@@ -851,6 +856,7 @@ if(germlineFile.getName().endsWith("fasta")){
 process Second_Alignment_J_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_4_germlineFastaFile_g11_17
 
 output:
  file "${db_name}"  into g11_17_germlineDb0_g11_9
@@ -875,6 +881,7 @@ if(germlineFile.getName().endsWith("fasta")){
 process Second_Alignment_V_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_2_germlineFastaFile_g11_22
 
 output:
  file "${db_name}"  into g11_22_germlineDb0_g11_9
@@ -946,6 +953,9 @@ process Second_Alignment_MakeDb {
 input:
  set val(name),file(fastaFile) from g_1_fastaFile_g11_12
  set val(name_igblast),file(igblastOut) from g11_9_igblastOut0_g11_12
+ set val(name1), file(v_germline_file) from g_2_germlineFastaFile_g11_12
+ set val(name2), file(d_germline_file) from g_3_germlineFastaFile_g11_12
+ set val(name3), file(j_germline_file) from g_4_germlineFastaFile_g11_12
 
 output:
  set val(name_igblast),file("*_db-pass.tsv") optional true  into g11_12_outputFileTSV0_g11_19
@@ -1571,7 +1581,7 @@ input:
 
 output:
  set val("${call}_genotype"),file("${call}_genotype_report.tsv")  into g_31_outputFileTSV0_g_32
- set val("${call}_personal_reference"), file("${call}_personal_reference.fasta")  into g_31_germlineFastaFile11
+ set val("${call}_personal_reference"), file("${call}_personal_reference.fasta")  into g_31_germlineFastaFile1_g21_12, g_31_germlineFastaFile1_g21_17
 
 script:
 
@@ -1666,7 +1676,7 @@ input:
 
 output:
  set val("${call}_genotype"),file("${call}_genotype_report.tsv")  into g_30_outputFileTSV0_g_32
- set val("${call}_personal_reference"), file("${call}_personal_reference.fasta")  into g_30_germlineFastaFile11
+ set val("${call}_personal_reference"), file("${call}_personal_reference.fasta")  into g_30_germlineFastaFile1_g21_12, g_30_germlineFastaFile1_g21_16
 
 script:
 
@@ -1850,6 +1860,7 @@ writeFasta(germline_db_new, file = paste0("${call}","_personal_reference.fasta")
 process Third_Alignment_D_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_30_germlineFastaFile1_g21_16
 
 output:
  file "${db_name}"  into g21_16_germlineDb0_g21_9
@@ -1874,6 +1885,7 @@ if(germlineFile.getName().endsWith("fasta")){
 process Third_Alignment_J_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_31_germlineFastaFile1_g21_17
 
 output:
  file "${db_name}"  into g21_17_germlineDb0_g21_9
@@ -1969,6 +1981,8 @@ process Third_Alignment_MakeDb {
 input:
  set val(name),file(fastaFile) from g_1_fastaFile_g21_12
  set val(name_igblast),file(igblastOut) from g21_9_igblastOut0_g21_12
+ set val(name2), file(d_germline_file) from g_30_germlineFastaFile1_g21_12
+ set val(name3), file(j_germline_file) from g_31_germlineFastaFile1_g21_12
 
 output:
  set val(name_igblast),file("*_db-pass.tsv") optional true  into g21_12_outputFileTSV0_g21_19
