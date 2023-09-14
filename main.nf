@@ -216,7 +216,7 @@ ch_empty_file_3 = file("$baseDir/.emptyfiles/NO_FILE_3", hidden:true)
 ch_empty_file_4 = file("$baseDir/.emptyfiles/NO_FILE_4", hidden:true)
 
 Channel.fromPath(params.airr_seq, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_1_fastaFile_g0_9;g_1_fastaFile_g0_12;g_1_fastaFile_g11_9;g_1_fastaFile_g11_12;g_1_fastaFile_g21_9;g_1_fastaFile_g21_12}
-Channel.fromPath(params.v_germline_file, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_2_germlineFastaFile_g_8;g_2_germlineFastaFile_g_15;g_2_germlineFastaFile_g11_12;g_2_germlineFastaFile_g11_22}
+Channel.fromPath(params.v_germline_file, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_2_germlineFastaFile_g_8;g_2_germlineFastaFile_g_15;g_2_germlineFastaFile_g11_12;g_2_germlineFastaFile_g11_22;g_2_germlineFastaFile_g0_12;g_2_germlineFastaFile_g0_22}
 Channel.fromPath(params.d_germline, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_3_germlineFastaFile_g_34;g_3_germlineFastaFile_g_30;g_3_germlineFastaFile_g14_0;g_3_germlineFastaFile_g14_1;g_3_germlineFastaFile_g11_12;g_3_germlineFastaFile_g11_16;g_3_germlineFastaFile_g0_12;g_3_germlineFastaFile_g0_16}
 Channel.fromPath(params.j_germline, type: 'any').map{ file -> tuple(file.baseName, file) }.into{g_4_germlineFastaFile_g_31;g_4_germlineFastaFile_g14_0;g_4_germlineFastaFile_g14_1;g_4_germlineFastaFile_g11_12;g_4_germlineFastaFile_g11_17;g_4_germlineFastaFile_g0_12;g_4_germlineFastaFile_g0_17}
 
@@ -274,6 +274,7 @@ if(germlineFile.getName().endsWith("fasta")){
 process First_Alignment_V_MakeBlastDb {
 
 input:
+ set val(db_name), file(germlineFile) from g_2_germlineFastaFile_g0_22
 
 output:
  file "${db_name}"  into g0_22_germlineDb0_g0_9
@@ -345,6 +346,7 @@ process First_Alignment_MakeDb {
 input:
  set val(name),file(fastaFile) from g_1_fastaFile_g0_12
  set val(name_igblast),file(igblastOut) from g0_9_igblastOut0_g0_12
+ set val(name1), file(v_germline_file) from g_2_germlineFastaFile_g0_12
  set val(name2), file(d_germline_file) from g_3_germlineFastaFile_g0_12
  set val(name3), file(j_germline_file) from g_4_germlineFastaFile_g0_12
 
