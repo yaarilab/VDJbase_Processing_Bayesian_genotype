@@ -664,7 +664,7 @@ input:
 
 output:
  set val(name),file(".tsv") optional true  into g_8_outputFileTSV00
- set val("v_germline"), file("${out_novel_germline}") optional true  into g_8_germlineFastaFile1_g_40
+ set val("v_germline"), file("${out_novel_germline}") optional true  into g_8_germlineFastaFile1_g_15, g_8_germlineFastaFile1_g11_12, g_8_germlineFastaFile1_g11_22
 
 script:
 chain = params.Undocumented_Alleles.chain
@@ -809,25 +809,6 @@ if (class(novel) != 'try-error') {
 }
 
 
-process check_undocumented_allele_process_output {
-
-input:
- set val(v_germline_name), file(v_germline_file) from g_8_germlineFastaFile1_g_40
-
-output:
- set val(v_germline_name), file(v_germline_file)  into g_40_germlineFastaFile0_g_15
-
-script:
-
-if(!v_germline_file.endsWith("fasta")){
-	params.run_Alignment = "no"
-}
-
-"""
-"""
-}
-
-
 process Second_Alignment_D_MakeBlastDb {
 
 input:
@@ -882,6 +863,7 @@ process Second_Alignment_V_MakeBlastDb {
 
 input:
  set val(db_name), file(germlineFile) from g_2_germlineFastaFile_g11_22
+ set val(db_name), file(germlineFile) from g_8_germlineFastaFile1_g11_22
 
 output:
  file "${db_name}"  into g11_22_germlineDb0_g11_9
@@ -954,6 +936,7 @@ input:
  set val(name),file(fastaFile) from g_1_fastaFile_g11_12
  set val(name_igblast),file(igblastOut) from g11_9_igblastOut0_g11_12
  set val(name1), file(v_germline_file) from g_2_germlineFastaFile_g11_12
+ set val(name1), file(v_germline_file) from g_8_germlineFastaFile1_g11_12
  set val(name2), file(d_germline_file) from g_3_germlineFastaFile_g11_12
  set val(name3), file(j_germline_file) from g_4_germlineFastaFile_g11_12
 
@@ -1262,7 +1245,7 @@ if(airrFile.getName().endsWith(".tsv")){
 g0_19_outputFileTSV0_g_15= g0_19_outputFileTSV0_g_15.ifEmpty([""]) 
 g_2_germlineFastaFile_g_15= g_2_germlineFastaFile_g_15.ifEmpty([""]) 
 g11_19_outputFileTSV0_g_15= g11_19_outputFileTSV0_g_15.ifEmpty([""]) 
-g_40_germlineFastaFile0_g_15= g_40_germlineFastaFile0_g_15.ifEmpty([""]) 
+g_8_germlineFastaFile1_g_15= g_8_germlineFastaFile1_g_15.ifEmpty([""]) 
 
 
 process airr_seq_for_clone {
@@ -1271,7 +1254,7 @@ input:
  set val("airrFile"), file(airrSeq) from g0_19_outputFileTSV0_g_15
  set val("v_germ"), file(v_germline_file) from g_2_germlineFastaFile_g_15
  set val("airrFileNovel"), file(airrSeqNovel) from g11_19_outputFileTSV0_g_15
- set val("v_novel"), file(v_novel_germline_file) from g_40_germlineFastaFile0_g_15
+ set val("v_novel"), file(v_novel_germline_file) from g_8_germlineFastaFile1_g_15
 
 output:
  set val(airr_name), file(airrSeqClone)  into g_15_outputFileTSV0_g_32, g_15_outputFileTSV0_g14_0
